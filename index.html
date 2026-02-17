@@ -4,54 +4,167 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free NID Finder CTH</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Consolas,monospace}
-body{background:black;color:#00ffcc;overflow-x:hidden}
+/* GENERAL */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Share Tech Mono', monospace;}
+body{background:#05010f;color:#00ffcc;overflow-x:hidden;}
+
+/* MATRIX BACKGROUND */
 canvas{position:fixed;top:0;left:0;z-index:-1}
-.container{max-width:500px;margin:80px auto;background:rgba(0,0,0,0.9);padding:30px;border-radius:15px;box-shadow:0 0 25px #00ffcc;}
-h1{text-align:center;margin-bottom:20px}
+
+/* CONTAINER */
+.container{
+max-width:600px;
+margin:60px auto;
+background:rgba(0,0,0,0.9);
+padding:30px 25px;
+border-radius:20px;
+box-shadow:0 0 30px #00ffcc,0 0 60px #ff00ff inset;
+border:2px solid #00ffcc;
+transition: all 0.5s ease;
+position:relative;
+}
+
+/* HEADER */
+h1{
+text-align:center;
+margin-bottom:25px;
+font-size:2em;
+color:#00ffcc;
+text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #f0f, 0 0 40px #f0f;
+}
+
+/* LOGO + EMOJI */
+.logo{
+font-size:50px;
+text-align:center;
+display:block;
+margin-bottom:15px;
+animation: bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+
+/* INPUT GROUP */
 .input-group{display:flex;margin-bottom:15px}
-.input-group span{background:#00ffcc;color:black;padding:10px;border-radius:8px 0 0 8px;font-weight:bold}
-.input-group input{flex:1;padding:10px;border:none;border-radius:0 8px 8px 0}
-input{width:100%;padding:10px;border:none;border-radius:8px;margin-top:10px}
-button{width:100%;padding:12px;border:none;border-radius:8px;background:#00ffcc;color:black;font-weight:bold;cursor:pointer;margin-top:10px}
-button:disabled{background:gray;cursor:not-allowed}
-.loader{border:4px solid #222;border-top:4px solid #00ffcc;border-radius:50%;width:30px;height:30px;animation:spin 1s linear infinite;margin:15px auto;display:none}
+.input-group span{
+background:#00ffcc;color:black;padding:12px;
+border-radius:8px 0 0 8px;
+font-weight:bold;
+box-shadow:0 0 8px #0ff;}
+.input-group input{
+flex:1;padding:12px;border:none;
+border-radius:0 8px 8px 0;
+background:#111;
+color:#0ff;
+box-shadow:inset 0 0 8px #0ff;
+font-size:16px;
+transition:0.3s;}
+.input-group input:focus{outline:none;box-shadow:0 0 15px #f0f;}
+
+/* BUTTON */
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#00ffcc,#ff00ff);
+color:black;font-weight:bold;cursor:pointer;font-size:16px;
+text-shadow:0 0 5px #fff;
+box-shadow:0 0 15px #00ffcc;
+transition:0.3s;
+}
+button:hover{box-shadow:0 0 25px #ff0,0 0 40px #f0f;text-shadow:0 0 10px #fff;}
+button:disabled{background:gray;cursor:not-allowed;box-shadow:none;}
+
+/* LOADER */
+.loader{
+border:5px solid #222;
+border-top:5px solid #00ffcc;
+border-radius:50%;
+width:40px;height:40px;
+animation:spin 1s linear infinite;
+margin:20px auto;display:none;
+box-shadow:0 0 15px #0ff,0 0 25px #f0f;
+}
 @keyframes spin{100%{transform:rotate(360deg)}}
-.result-card{margin-top:20px;background:#111;padding:15px;border-radius:10px;box-shadow:0 0 15px #00ffcc;display:none}
-.result-card h3{border-bottom:1px solid #00ffcc;padding-bottom:5px;margin-bottom:10px}
-.result-item{margin-bottom:8px;font-size:14px;color:white}
-.rules{margin-top:20px;font-size:12px;color:#aaa}
-.popup{position:fixed;bottom:20px;right:20px;background:#0f0f0f;padding:15px;border-radius:10px;box-shadow:0 0 15px #00ffcc;display:none}
-.popup a{color:#00ffcc;text-decoration:none;font-weight:bold}
-.close{position:absolute;top:5px;right:8px;cursor:pointer;color:red}
+
+/* RESULT CARD */
+.result-card{
+margin-top:25px;
+background:#111;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 20px #00ffcc inset,0 0 40px #ff00ff;
+display:none;
+animation:fadeIn 0.7s ease forwards;
+}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.result-card h3{
+border-bottom:1px solid #00ffcc;
+padding-bottom:5px;margin-bottom:10px;
+color:#ff0;
+text-shadow:0 0 8px #ff0,0 0 12px #f0f;}
+.result-item{
+margin-bottom:10px;font-size:15px;color:white;line-height:1.5;}
+
+/* RULES */
+.rules{margin-top:20px;font-size:12px;color:#aaa;line-height:1.4}
+
+/* TELEGRAM POPUP */
+.popup{
+position:fixed;bottom:25px;right:25px;
+background:#0f0f0f;padding:18px 20px;
+border-radius:12px;box-shadow:0 0 20px #00ffcc;
+display:none;z-index:10;
+animation:slideIn 0.6s ease forwards;
+}
+.popup a{color:#ff0;font-weight:bold;text-decoration:none;}
+.popup .close{position:absolute;top:6px;right:10px;cursor:pointer;color:red;font-size:18px;}
+@keyframes slideIn{0%{opacity:0;transform:translateX(50px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes glow{0%,100%{text-shadow:0 0 5px #0ff,0 0 15px #f0f;}50%{text-shadow:0 0 20px #0ff,0 0 30px #f0f;}}
+
+/* FOOTER */
+footer{text-align:center;color:#0ff;margin-top:15px;font-size:13px;}
 </style>
 </head>
+
 <body>
+
 <canvas id="matrix"></canvas>
+
 <div class="container">
+<span class="logo">🃏</span>
 <h1>Free NID Finder CTH</h1>
+
 <div class="input-group">
 <span>+880</span>
 <input type="text" id="number" placeholder="1XXXXXXXXX">
 </div>
-<label>Solve: <span id="captchaQ"></span></label>
+
+<label style="color:#ff0">Solve: <span id="captchaQ"></span></label>
 <input type="text" id="captchaA" placeholder="Enter Answer">
+
 <button id="searchBtn" onclick="verify()">Search</button>
+
 <div class="loader" id="loader"></div>
+
 <div class="result-card" id="resultCard">
-<h3>Lookup Result</h3>
+<h3>🔍 Lookup Result</h3>
 <div id="resultContent"></div>
 </div>
+
 <div class="rules">
 ⚠ Rules:<br>
 • Bangladesh numbers only<br>
 • Human verification required<br>
 • Misuse strictly prohibited<br>
-• Activity may be logged<br>
+• Activity may be logged
 </div>
-<p style="text-align:center;margin-top:20px;">© SHADOW JOKER</p>
+
+<footer>© SHADOW JOKER</footer>
 </div>
+
 <div class="popup" id="tgPopup">
 <span class="close" onclick="closePopup()">✖</span>
 Join our Telegram Channel<br>
@@ -63,7 +176,7 @@ Join our Telegram Channel<br>
 const canvas=document.getElementById("matrix");
 const ctx=canvas.getContext("2d");
 canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-let letters="01".split(""),fontSize=14,columns=canvas.width/fontSize,drops=[];
+let letters="01".split(""),fontSize=16,columns=canvas.width/fontSize,drops=[];
 for(let x=0;x<columns;x++)drops[x]=1;
 function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);
 ctx.fillStyle="#00ffcc";ctx.font=fontSize+"px monospace";
@@ -76,7 +189,7 @@ setInterval(draw,33);
 let num1=Math.floor(Math.random()*10),num2=Math.floor(Math.random()*10);
 document.getElementById("captchaQ").innerText=num1+" + "+num2;
 
-/* API LIST - param=number */
+/* API LIST */
 const API_LIST=[
 {url:"/api/server1",method:"GET"},
 {url:"/api/server2",method:"POST"},
@@ -115,7 +228,7 @@ loader.style.display="none";btn.disabled=false;
 
 if(!result){alert("No response from servers");return;}
 content.innerHTML="";
-for(let key in result){content.innerHTML+=`<div class="result-item"><b>${key}:</b> ${result[key]}</div>`;}
+for(let key in result){content.innerHTML+=`<div class="result-item">💠 <b>${key}:</b> ${result[key]}</div>`;}
 card.style.display="block";
 }
 
@@ -123,5 +236,6 @@ card.style.display="block";
 setTimeout(()=>{document.getElementById("tgPopup").style.display="block";},4000);
 function closePopup(){document.getElementById("tgPopup").style.display="none";}
 </script>
+
 </body>
 </html>
