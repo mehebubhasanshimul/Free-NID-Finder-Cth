@@ -17,7 +17,7 @@ canvas{position:fixed;top:0;left:0;z-index:-1}
 .container{
 max-width:600px;
 margin:60px auto;
-background:rgba(0,0,0,0.9);
+background:rgba(0,0,0,0.95);
 padding:30px 25px;
 border-radius:20px;
 box-shadow:0 0 30px #00ffcc,0 0 60px #ff00ff inset;
@@ -33,6 +33,7 @@ margin-bottom:25px;
 font-size:2em;
 color:#00ffcc;
 text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #f0f, 0 0 40px #f0f;
+animation:glow 2s infinite;
 }
 
 /* LOGO + EMOJI */
@@ -44,6 +45,7 @@ margin-bottom:15px;
 animation: bounce 2s infinite;
 }
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+@keyframes glow{0%,100%{text-shadow:0 0 5px #0ff,0 0 15px #f0f;}50%{text-shadow:0 0 20px #0ff,0 0 30px #f0f;}}
 
 /* INPUT GROUP */
 .input-group{display:flex;margin-bottom:15px}
@@ -122,7 +124,6 @@ animation:slideIn 0.6s ease forwards;
 .popup a{color:#ff0;font-weight:bold;text-decoration:none;}
 .popup .close{position:absolute;top:6px;right:10px;cursor:pointer;color:red;font-size:18px;}
 @keyframes slideIn{0%{opacity:0;transform:translateX(50px)}100%{opacity:1;transform:translateX(0)}}
-@keyframes glow{0%,100%{text-shadow:0 0 5px #0ff,0 0 15px #f0f;}50%{text-shadow:0 0 20px #0ff,0 0 30px #f0f;}}
 
 /* FOOTER */
 footer{text-align:center;color:#0ff;margin-top:15px;font-size:13px;}
@@ -196,6 +197,7 @@ const API_LIST=[
 {url:"/api/server3",method:"GET"}
 ];
 
+/* CALL API FUNCTION */
 async function callAPI(number){
 for(let api of API_LIST){
 try{
@@ -211,6 +213,7 @@ if(data) return data;
 return null;
 }
 
+/* VERIFY FUNCTION */
 async function verify(){
 const number=document.getElementById("number").value;
 const captcha=document.getElementById("captchaA").value;
@@ -223,16 +226,19 @@ if(!/^1\d{9}$/.test(number)){alert("Invalid Bangladesh Number");return;}
 if(parseInt(captcha)!==num1+num2){alert("Human verification failed");return;}
 
 btn.disabled=true;loader.style.display="block";card.style.display="none";
+
 const result=await callAPI(number);
+
 loader.style.display="none";btn.disabled=false;
 
 if(!result){alert("No response from servers");return;}
+
 content.innerHTML="";
 for(let key in result){content.innerHTML+=`<div class="result-item">💠 <b>${key}:</b> ${result[key]}</div>`;}
 card.style.display="block";
 }
 
-/* Telegram Popup */
+/* TELEGRAM POPUP */
 setTimeout(()=>{document.getElementById("tgPopup").style.display="block";},4000);
 function closePopup(){document.getElementById("tgPopup").style.display="none";}
 </script>
